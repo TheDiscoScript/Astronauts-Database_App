@@ -3,12 +3,11 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 //react redux
-import { useDispatch } from "react-redux";
-import { addAstronaut } from "../database/databaseSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { editAstronaut } from "../database/databaseSlice";
 //react hook form
 import { useForm, Controller } from "react-hook-form";
 //form helpers
-import moment from "moment";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   KeyboardDatePicker,
@@ -36,10 +35,10 @@ const useStyles = makeStyles(() => ({
     },
   },
   formWrapper: {
-    width: "100%",
     display: "flex",
     justifyContent: "center",
     alignSelf: "baseline",
+    width: "100%",
   },
   form: {
     display: "flex",
@@ -75,39 +74,49 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Creator = () => {
-  //Will send to redux store
-  const [data, setData] = useState(null);
-
+const Editor = ({ match }) => {
   //helpers
   const classes = useStyles(); //css
   const dispatch = useDispatch(); //redux toolkit
   const history = useHistory(); //for submit button Link (- with normal Link it wouldn't push to store)
-  const { handleSubmit, reset, control, watch } = useForm(); //form
+  const { control, watch } = useForm(); //form
+  //find our astronaut in store
+  const { astronautId } = match.params;
+  const theAstronaut = useSelector((state) =>
+    state.database.find((astronaut) => astronaut.id === astronautId)
+  );
+  //state for this file
+  const [firstName, setFirstName] = useState(theAstronaut.firstName);
+  const [lastName, setLastName] = useState(theAstronaut.lastName);
+  const [superPower, setSuperPower] = useState(theAstronaut.superPower);
+  const [text, setText] = useState(theAstronaut.text);
+  const onfirstNameChanged = (e) => setFirstName(e.target.value);
+  const onlastNameChanged = (e) => setLastName(e.target.value);
+  const onsuperPowerChanged = (e) => setSuperPower(e.target.value);
+  const onTextChanged = (e) => setText(e.target.value);
+  //birth - not working with form
+  const [birth, setBirth] = useState(theAstronaut.birth);
+
   //implement wach - very useful!!
-  const watchAllFields = watch(); // when pass nothing as argument, you are watching everything
-  console.log("watchAllFields", watchAllFields);
+  const watchOptional = watch("showOptional", false); // when pass nothing as argument, you are watching everything
 
   //function for dispatch
-  const helperFunction = (data) => {
-    setData(data);
-    console.log(data);
-    if (data.firstName && data.lastName && data.superPower && data.birth) {
+  const helperEditFunction = () => {
+    console.log("Checking if req is filled in");
+    if (firstName && lastName && birth && superPower) {
+      console.log("Going to dispatch");
       dispatch(
-        addAstronaut(
-          data.firstName,
-          data.lastName,
-          createReadableBirth(),
-          data.superPower,
-          data.text
-        )
+        editAstronaut({
+          id: astronautId,
+          firstName,
+          lastName,
+          birth,
+          superPower,
+          text,
+        })
       );
-    }
-    reset(); //reset form
-    history.push("/"); //This is awesome!
-    //helper function - formating date
-    function createReadableBirth() {
-      return moment(data.birth).format("DD/MM/YYYY");
+      console.log("dispatched, going to homepage");
+      history.push("/"); //This is awesome!
     }
   };
 
@@ -116,12 +125,9 @@ const Creator = () => {
       <div className={classes.formWrapper}>
         <Paper style={{ width: "80%" }}>
           <Typography variant="h3" gutterBottom style={{ paddingTop: "1rem" }}>
-            Create your astronaut!
+            Edit your astronaut!
           </Typography>
-          <form
-            className={classes.form}
-            onSubmit={handleSubmit((data) => helperFunction(data))}
-          >
+          <form onSubmit={helperEditFunction} className={classes.form}>
             <Controller
               name="firstName"
               control={control}
@@ -133,6 +139,8 @@ const Creator = () => {
                   type="text"
                   placeholder="First name"
                   required
+                  value={firstName}
+                  onChange={onfirstNameChanged}
                 />
               )}
             />
@@ -146,6 +154,8 @@ const Creator = () => {
                   type="text"
                   placeholder="Last name"
                   required
+                  value={lastName}
+                  onChange={onlastNameChanged}
                 />
               )}
             />
@@ -156,6 +166,10 @@ const Creator = () => {
                 control={control}
                 render={({ field: { ref, ...rest } }) => (
                   <KeyboardDatePicker
+                    //disabled - I am having problems
+                    //with importing date value into
+                    // UI
+                    disabled
                     className={classes.formItem}
                     id="date-picker-dialog"
                     label="Date of birth"
@@ -163,6 +177,7 @@ const Creator = () => {
                     KeyboardButtonProps={{
                       "aria-label": "change date",
                     }}
+                    value={birth}
                     {...rest}
                     required
                   />
@@ -181,6 +196,8 @@ const Creator = () => {
                   type="text"
                   placeholder="Superpower"
                   required
+                  value={superPower}
+                  onChange={onsuperPowerChanged}
                 />
               )}
             />
@@ -194,6 +211,9 @@ const Creator = () => {
                     style={{ marginLeft: "0.5rem" }}
                     {...field}
                     type="checkbox"
+
+                    //this is bugged, if I use defaultChecked={true}
+                    // it doesn't do anything, idk why
                   />
                 )}
               />
@@ -203,12 +223,14 @@ const Creator = () => {
               control={control}
               render={({ field }) => (
                 <>
-                  {watchAllFields.showOptional ? (
+                  {watchOptional ? (
                     <>
                       <textarea
                         className={classes.formItem}
                         placeholder="Few sentences about this person..."
                         {...field}
+                        value={text}
+                        onChange={onTextChanged}
                       />
                     </>
                   ) : (
@@ -227,19 +249,15 @@ const Creator = () => {
           </form>
         </Paper>
       </div>
-      {/* result div */}
+      {/* end of form Div */}
       <div className={classes.resultWrapper}>
-        {watchAllFields.firstName ||
-        watchAllFields.lastName ||
-        watchAllFields.birth ||
-        watchAllFields.text ||
-        watchAllFields.superPower ? (
+        {firstName || lastName || birth || superPower || text ? (
           <Paper elevation={3} className={classes.resultPaper}>
             <div style={{ textAlign: "center" }}>
-              {watchAllFields.firstName || watchAllFields.lastName ? (
+              {firstName || lastName ? (
                 <>
                   <Typography className={classes.credentials} variant="h3">
-                    {watchAllFields.firstName} {watchAllFields.lastName}
+                    {firstName} {lastName}
                     <Divider />
                   </Typography>
                 </>
@@ -248,30 +266,27 @@ const Creator = () => {
               )}
             </div>
 
-            {watchAllFields.birth ? (
+            {birth ? (
               <>
-                <Typography variant="h4">
-                  Date of birth:{" "}
-                  {moment(watchAllFields.birth).format("DD/MM/YYYY")}
-                </Typography>
+                <Typography variant="h4">Date of birth: {birth}</Typography>
               </>
             ) : (
               ""
             )}
-            {watchAllFields.superPower ? (
+
+            {superPower ? (
               <>
-                <Typography variant="h4">
-                  Superpower: {watchAllFields.superPower}
-                </Typography>
+                <Typography variant="h4">Superpower: {superPower}</Typography>
               </>
             ) : (
               ""
             )}
-            {watchAllFields.text ? (
+
+            {text ? (
               <>
                 <Divider />
                 <Typography variant="h5">Who am I?</Typography>
-                <Typography variant="body1">{watchAllFields.text}</Typography>
+                <Typography variant="body1">{text}</Typography>
               </>
             ) : (
               ""
@@ -295,4 +310,4 @@ const Creator = () => {
   );
 };
 
-export default Creator;
+export default Editor;
