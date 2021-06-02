@@ -2,7 +2,7 @@ import "./App.css";
 import React from "react";
 // Router import
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
   Redirect,
@@ -15,7 +15,7 @@ import Footer from "./features/components/buildingBlocks/Footer";
 
 const App = () => {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div className="App">
         <Switch>
           <Route exact path="/" component={Home} />
