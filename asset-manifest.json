@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/astronauts-database_app/static/css/main.1c4406bb.chunk.css",
-    "main.js": "/astronauts-database_app/static/js/main.18ca59cd.chunk.js",
-    "main.js.map": "/astronauts-database_app/static/js/main.18ca59cd.chunk.js.map",
-    "runtime-main.js": "/astronauts-database_app/static/js/runtime-main.aac97f38.js",
-    "runtime-main.js.map": "/astronauts-database_app/static/js/runtime-main.aac97f38.js.map",
-    "static/js/2.403d3d64.chunk.js": "/astronauts-database_app/static/js/2.403d3d64.chunk.js",
-    "static/js/2.403d3d64.chunk.js.map": "/astronauts-database_app/static/js/2.403d3d64.chunk.js.map",
-    "index.html": "/astronauts-database_app/index.html",
-    "static/css/main.1c4406bb.chunk.css.map": "/astronauts-database_app/static/css/main.1c4406bb.chunk.css.map",
-    "static/js/2.403d3d64.chunk.js.LICENSE.txt": "/astronauts-database_app/static/js/2.403d3d64.chunk.js.LICENSE.txt",
-    "static/media/App.css": "/astronauts-database_app/static/media/homeBG.48f08cf8.jpg"
+    "main.css": "/Astronauts-Database_App/static/css/main.6ec6008c.chunk.css",
+    "main.js": "/Astronauts-Database_App/static/js/main.0b1c9121.chunk.js",
+    "main.js.map": "/Astronauts-Database_App/static/js/main.0b1c9121.chunk.js.map",
+    "runtime-main.js": "/Astronauts-Database_App/static/js/runtime-main.2ea261f3.js",
+    "runtime-main.js.map": "/Astronauts-Database_App/static/js/runtime-main.2ea261f3.js.map",
+    "static/js/2.b28b33b5.chunk.js": "/Astronauts-Database_App/static/js/2.b28b33b5.chunk.js",
+    "static/js/2.b28b33b5.chunk.js.map": "/Astronauts-Database_App/static/js/2.b28b33b5.chunk.js.map",
+    "index.html": "/Astronauts-Database_App/index.html",
+    "static/css/main.6ec6008c.chunk.css.map": "/Astronauts-Database_App/static/css/main.6ec6008c.chunk.css.map",
+    "static/js/2.b28b33b5.chunk.js.LICENSE.txt": "/Astronauts-Database_App/static/js/2.b28b33b5.chunk.js.LICENSE.txt",
+    "static/media/App.css": "/Astronauts-Database_App/static/media/homeBG.48f08cf8.jpg"
   },
   "entrypoints": [
-    "static/js/runtime-main.aac97f38.js",
-    "static/js/2.403d3d64.chunk.js",
-    "static/css/main.1c4406bb.chunk.css",
-    "static/js/main.18ca59cd.chunk.js"
+    "static/js/runtime-main.2ea261f3.js",
+    "static/js/2.b28b33b5.chunk.js",
+    "static/css/main.6ec6008c.chunk.css",
+    "static/js/main.0b1c9121.chunk.js"
   ]
 }
